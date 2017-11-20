@@ -1,0 +1,1 @@
+Generates custom RetroArch playlists.
