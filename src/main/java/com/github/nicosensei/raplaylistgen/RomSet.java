@@ -29,10 +29,9 @@ public final class RomSet extends HashSet<String> {
         this.root = folder.getAbsolutePath();
 
         Arrays.asList(folder.listFiles(f ->  f.isFile() && f.getName().endsWith(ZIP_EXT)))
-            .parallelStream()
             .forEach(f -> this.add(f.getName().replaceFirst("\\" + ZIP_EXT, "")));
 
-        LOG.info("Found %s roms in %s", size(), root);
+        LOG.info("Found {} roms in {}", size(), root);
     }
 
     public String getId() {

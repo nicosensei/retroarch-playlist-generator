@@ -5,6 +5,11 @@ public final class DatEntry {
     private String name;
     private String description;
 
+    public DatEntry(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     public String getName() {
         return name;
     }
