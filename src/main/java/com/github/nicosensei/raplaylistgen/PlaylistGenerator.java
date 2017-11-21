@@ -38,27 +38,41 @@ public final class PlaylistGenerator {
             }
         }
 
+        final PlaylistGenerator gen = new PlaylistGenerator();
+
         for (final DatEntry rom : datFile.values()) {
-            final String hit = lookupThumbnail(rom, thumbDirs);
+            final String hit = gen.lookupThumbnail(rom, thumbDirs);
         }
 
 //        final File targetFolder = new File(props.getProperty("target"));
     }
 
-    private static String lookupThumbnail(
+    private String lookupThumbnail(
             final DatEntry datEntry,
             final List<File> thumbnailsDirs) {
         final String gameFullName = datEntry.getDescription();
+        final String lookFor = neutralize(gameFullName);
         final Iterator<File> dirs = thumbnailsDirs.iterator();
         while (dirs.hasNext()) {
-            final File[] hits = dirs.next().listFiles((d, n) ->  (gameFullName + ".png").equals(n));
+            final File[] hits = dirs.next().listFiles(
+//                    (d, n) ->  (neutralize(gameFullName + ".png")).equals(neutralize(n)));
+                    (d, n) ->  {
+                        final String nf = neutralize(n.replaceAll("\\.png", ""));
+//                        LOG.debug("{} | {}", lookFor, nf);
+                        return lookFor.equals(nf);
+                    });
             if (hits.length > 0) {
-                LOG.debug("[{}] {} > {}", datEntry.getName(), gameFullName, hits[0].getName());
+//                LOG.debug("[OK] {} ({})", gameFullName, datEntry.getName());
                 return hits[0].getAbsolutePath();
             }
         }
-        LOG.debug("[{}] {} > ???", datEntry.getName(), gameFullName);
+        LOG.debug("[KO] {} ({})", gameFullName, datEntry.getName());
         return null;
     }
 
+    private String neutralize(final String s)  {
+        return s
+                .replaceAll("_", "")
+                .replaceAll("\\W+", "").toLowerCase();
+    }
 }
